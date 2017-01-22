@@ -1,0 +1,12 @@
+Alston Huang
+1471706
+CMPS101
+PA1
+README
+
+Included files:
+Lex.java -Sorts words in lexographic order using List.java's ADT functinos
+List.java -ADT functions for list
+ListClient.java 
+Makefile
+README
