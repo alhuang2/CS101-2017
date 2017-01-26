@@ -23,7 +23,6 @@ typedef struct ListObj{
 	Node cursor;
 } ListObj;
 
-typedef ListObj* List;
 //constructos - destructors
 
 //newNode()
@@ -54,15 +53,15 @@ List newList(){
 	return(L);
 }
 
-void freeList(List* pL){
-	if(pL!=NULL && *pL!=NULL){
-		while( !isEmpty(*pQ) ){
-			delete(*pL);
-		}
-		free(*pL);
-		*pL = NULL;
-	}
-}
+// void freeList(List* pL){
+// 	if(pL!=NULL && *pL!=NULL){
+// 		while( !isEmpty(*pL) ){
+// 			delete(*pL);
+// 		}
+// 		free(*pL);
+// 		*pL = NULL;
+// 	}
+// }
 
 
 //ACCESS FUNCTIONS 
@@ -70,7 +69,8 @@ int length(List L){
 	return L->length;
 }
 
-int index(List L){
+//changed function name from index -> getIndex to avoid warning error
+int getIndex(List L){
 	if(L->index > L->length - 1)
 		L->index = -1;
 	return L->index;
@@ -123,6 +123,7 @@ void clear(List L){
 	L->front = L->back = NULL;
 	L->index = -1;
 	L->length = 0;
+	//must use freeNode and freeList
 }
 
 void moveFront(List L){
@@ -178,6 +179,119 @@ void prepend(List L, int data){
 
 void append(List L, int data){
 	Node temp = newNode(data);
-	if()
+	if(L->length == 0){
+		L->front = L->back = temp;
+	}
+	else{
+		L->back->next = temp;
+		temp->prev = L->back;
+		L->back = temp;
+	}
+	L->length++;
 }
+
+void insertBefore(List L, int data){
+	Node temp = newNode(data);
+	if(L->length<=0 || L->index<0){
+		printf("Cannot insertBefore() on empty list or off index.");
+		exit(1);
+	}
+	if(L->index == 0)
+		prepend(L, data);
+	else{
+		temp->next = L->cursor;
+		temp->prev = L->cursor->prev;
+		L->cursor->prev->next = temp;
+		L->cursor->prev = temp;
+		L->index++;
+		L->length++;
+	}
+}
+
+void insertAfter(List L, int data){
+	Node temp = newNode(data);
+	if(L->length<=0 || L->index<0){
+		printf("Cannot insertAfter() on empty or null list.");
+		exit(1);
+	}
+	if(L->index == L->length-1)
+		append(L, data);
+	else if(L->index >= L->length){
+		printf("Cannot insertAfter() on index greater than length.");
+		exit(1);
+	}
+	else{
+		temp->prev = L->cursor;
+		temp->next = L->cursor->next;
+		L->cursor->next = temp;
+		L->cursor->prev = temp;
+		L->length++;
+	}
+}
+
+void deleteFront(List L){
+	if(L->length<=0){
+		printf("Cannot deleteFront() on empty list.\n");
+		exit(1);
+	}
+	Node temp;
+	temp = L->front->next;
+	temp->prev = NULL;
+	L->front = temp;
+	L->length--;
+}
+
+void deleteBack(List L){
+	if(L->length <= 0){
+		printf("Cannot deleteBack() on empty list.\n");
+		exit(1);
+	}
+	Node temp;
+	temp = L->back->prev;
+	temp->next = NULL;
+	L->back = temp;
+	L->length--;
+}
+
+void delete(List L){
+	if(L->length <= 0 || L->index < 0){
+		printf("Cannot delete() on empty or NULL index list.");
+		exit(1);
+	}
+	// if(L->index == 0)
+	// 	// need to use clear or freeNode or freeList
+	// else{
+
+	// }
+}
+
+//must use freeNode to free nodeTemp
+List copy(List L){
+	List listTemp = newList();
+	Node nodeTemp = L->front;
+	while(nodeTemp != NULL){
+		append(listTemp, nodeTemp->data);
+		nodeTemp = nodeTemp->next;
+	}
+	freeNode(nodeTemp);
+	return listTemp;
+}
+
+void printList(FILE* out, List L){
+	Node N = NULL;
+
+	if(L == NULL){
+		printf("Cannot printList() on empty list.\n");
+		exit(1);
+	}
+
+	for(N = L->front; N!=NULL; N = N->next){
+		fprintf(out, "%d ", N->data);
+		if(N->next == NULL)
+			fprintf(out, "\n");
+	}
+}
+
+
+
 
