@@ -1,3 +1,9 @@
+// Alston Huang
+// 1471706
+// CMPS101 PA2
+// Interface for List.c
+// List.h
+
 #ifndef _LIST_H_INCLUDE_
 #define _LIST_H_INCLUDE_
 
@@ -10,8 +16,7 @@ void freeList(List* pL);
 //access functions
 int length(List L);
 
-//changed function name from index -> getIndex to avoid warning error
-int getIndex(List L);
+int index(List L);
 
 int front(List L);
 
@@ -49,7 +54,7 @@ void deleteBack(List L);
 
 void delete(List L);
 
-List copy(List  L);
+List copyList(List  L);
 
 void printList(FILE* out, List L);
 

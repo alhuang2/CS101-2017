@@ -1,8 +1,12 @@
+// Alston Huang
+// 1471706
+// CMPS101 PA2
+// ADT functions for list
+// List.c
+
 #include<stdio.h>
 #include<stdlib.h>
-
-//structs
-
+#include"List.h"
 
 //private NodeObj type
 typedef struct NodeObj{
@@ -53,15 +57,15 @@ List newList(){
 	return(L);
 }
 
-// void freeList(List* pL){
-// 	if(pL!=NULL && *pL!=NULL){
-// 		while( !isEmpty(*pL) ){
-// 			delete(*pL);
-// 		}
-// 		free(*pL);
-// 		*pL = NULL;
-// 	}
-// }
+void freeList(List* pL){
+	if(pL!=NULL && *pL!=NULL){
+		while( !( (*pL)->length == 0 ) ){
+			deleteFront(*pL);
+		}
+		free(*pL);
+		*pL = NULL;
+	}
+}
 
 
 //ACCESS FUNCTIONS 
@@ -69,8 +73,11 @@ int length(List L){
 	return L->length;
 }
 
-//changed function name from index -> getIndex to avoid warning error
-int getIndex(List L){
+int index(List L){
+	if(L==NULL){
+		printf("Cannot index() on empty list.");
+		exit(1);
+	}
 	if(L->index > L->length - 1)
 		L->index = -1;
 	return L->index;
@@ -99,6 +106,7 @@ int get(List L){
 		return L->cursor->data;
 	else{
 		printf("Cannot get() on empty list or invalid index.");
+		exit(1);
 	}
 }
 
@@ -108,22 +116,24 @@ int equals(List L1, List L2){
 	Node a = L1->front;
 	Node b = L2->front;
 	if( length(L1) == length(L2) ){
-		while( eq == 1 && a != NULL){
-			if( a->data != b->data )
-				eq = 0;
-			a->next;
-			b->next;
+		while( eq && a != NULL){
+			eq = (a->data == b->data);
+			a = a->next;
+			b = b->next;
 		}
 	}
 	return eq;
 }
 
+
 //Manipulation procedures
 void clear(List L){
-	L->front = L->back = NULL;
-	L->index = -1;
+	//keep deleting backs until the whole list is clear
+	while(L->front != NULL)
+		deleteBack(L);
 	L->length = 0;
-	//must use freeNode and freeList
+	L->index = -1;
+	L->cursor = L->front = L->back = NULL;
 }
 
 void moveFront(List L){
@@ -223,8 +233,8 @@ void insertAfter(List L, int data){
 	else{
 		temp->prev = L->cursor;
 		temp->next = L->cursor->next;
+		L->cursor->next->prev = temp;
 		L->cursor->next = temp;
-		L->cursor->prev = temp;
 		L->length++;
 	}
 }
@@ -234,11 +244,14 @@ void deleteFront(List L){
 		printf("Cannot deleteFront() on empty list.\n");
 		exit(1);
 	}
-	Node temp;
-	temp = L->front->next;
-	temp->prev = NULL;
-	L->front = temp;
+	//save front into temp so we can properly free it later
+	Node temp = L->front;
+	if(L->length > 1)
+		L->front = L->front->next;
+	else
+		L->front = L->back = NULL;
 	L->length--;
+	freeNode(&temp);
 }
 
 void deleteBack(List L){
@@ -246,11 +259,14 @@ void deleteBack(List L){
 		printf("Cannot deleteBack() on empty list.\n");
 		exit(1);
 	}
-	Node temp;
-	temp = L->back->prev;
-	temp->next = NULL;
-	L->back = temp;
+	//same reason as deleteFront's temp
+	Node temp = L->back;
+	if(L->length > 1)
+		L->back = L->back->prev;
+	else
+		L->front = L->back = NULL;
 	L->length--;
+	freeNode(&temp);
 }
 
 void delete(List L){
@@ -258,22 +274,26 @@ void delete(List L){
 		printf("Cannot delete() on empty or NULL index list.");
 		exit(1);
 	}
-	// if(L->index == 0)
-	// 	// need to use clear or freeNode or freeList
-	// else{
-
-	// }
+	else{
+		L->cursor->prev->next = L->cursor->next;
+		L->cursor->next->prev = L->cursor->prev;
+		L->cursor->next = NULL;
+		L->cursor->prev = NULL;
+		freeNode(&L->cursor); // preoperly delete cursor's node
+		L->cursor = NULL;
+		L->index = -1;
+		L->length--;
+	}
 }
 
-//must use freeNode to free nodeTemp
-List copy(List L){
+List copyList(List L){
 	List listTemp = newList();
 	Node nodeTemp = L->front;
 	while(nodeTemp != NULL){
 		append(listTemp, nodeTemp->data);
 		nodeTemp = nodeTemp->next;
 	}
-	freeNode(nodeTemp);
+	//freeNode(&nodeTemp);
 	return listTemp;
 }
 
@@ -287,8 +307,9 @@ void printList(FILE* out, List L){
 
 	for(N = L->front; N!=NULL; N = N->next){
 		fprintf(out, "%d ", N->data);
-		if(N->next == NULL)
+		if(N->next == NULL){
 			fprintf(out, "\n");
+		}
 	}
 }
 

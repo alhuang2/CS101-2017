@@ -7,6 +7,7 @@ int main(int argc, char* argv[]){
 
 	List A = newList();
 	List B = newList();
+	List C = newList();
 	int n=0;
 	int count=0;
 	FILE *in, *out;
@@ -33,7 +34,14 @@ int main(int argc, char* argv[]){
 		prepend(B, i);
 	}
 
+	moveFront(A);
+	int lmao = index(A);
 	printList(out, A);
+	printf("%d\n", lmao);
+
+	C = copyList(A);
+	//printf("%s\n", equals(C,A)?"true":"false");
+	printList(out,C);
 
 	fclose(in);
 	fclose(out);

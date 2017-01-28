@@ -1,0 +1,13 @@
+Alston Huang
+1471706
+CMPS101
+PA2
+README
+
+Included files:
+Lex.c -Sorts words in lexographic order using List.c's ADT functinos
+List.c -ADT functions for list
+List.h -Interface for List.c
+ListClient.c 
+Makefile
+README
