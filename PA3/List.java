@@ -1,6 +1,6 @@
 // Alston Huang
 // 1471706
-// CMPS101 PA1
+// CMPS101 PA3
 // ADT functions for list
 // List.java
 
@@ -210,20 +210,15 @@ class List{
 	void deleteFront(){
 		if(length<=0)
 			throw new RuntimeException("Cannot deleteFront() on empty list.");
-		Node temp;
-		temp = front.next;
-		temp.prev = null;
-		front = temp;
+		front = front.next;
 		length--;
 	}
 
 	void deleteBack(){
 		if(length<=0)
 			throw new RuntimeException("Cannot deleteBack() on empty list.");
-		Node temp;
-		temp = back.prev;
-		temp.next = null;
-		back = temp;
+		cursor = back;
+		back = back.prev;
 		length--;			
 	}
 
@@ -234,6 +229,8 @@ class List{
 			deleteFront();
 		else if( index == length-1 )
 			deleteBack();
+		else if(length == 0)
+			clear();
 		else{
 			Node temp = cursor.prev;
 			Node holdTheNext = cursor.next;

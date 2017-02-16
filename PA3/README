@@ -1,0 +1,15 @@
+Alston Huang
+1471706
+CMPS101
+PA3
+README
+
+Included files:
+Sparse.java -Sorts words in lexographic order using List.java's ADT functinos
+List.java -ADT functions for list
+Matrix.java -ADT Functions for Matrix using List ADT functions
+MatrixClient.java
+MatrixTest.java -test file to test Matrix functions as it's being created
+ListTest.java  -test file to test List functions as it's being modified
+Makefile
+README
