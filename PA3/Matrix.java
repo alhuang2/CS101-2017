@@ -176,7 +176,7 @@ public class Matrix{
 				matrix[i].moveFront(); M.matrix[i].moveFront();
 
 				while( matrix[i].index() != -1 || M.matrix[i].index() != -1 ){
-					if( matrix[i].index() != -1 && M.matrix[i].index() != -1 ){
+					if( matrix[i].index() != -1 && M.matrix[i].index() != -1 ){ //if the indexes are offset, make indexes equal to each other
 
 						Entry left = (Entry)matrix[i].get();
 						Entry right = (Entry)M.matrix[i].get();
@@ -195,7 +195,7 @@ public class Matrix{
 							M.matrix[i].moveNext();
 						}
 					}
-					else if( matrix[i].index() != -1){
+					else if( matrix[i].index() != -1){ 
 						Entry left = (Entry)matrix[i].get();
 						returnMatrix.changeEntry(i, left.column, left.value);
 						matrix[i].moveNext();
